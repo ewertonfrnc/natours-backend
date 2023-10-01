@@ -60,6 +60,13 @@ app.patch('/api/v1/tours/:id', (request, response) => {
   });
 });
 
+app.delete('/api/v1/tours/:id', (request, response) => {
+  response.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}...`);
