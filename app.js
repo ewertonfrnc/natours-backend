@@ -12,9 +12,21 @@ app.get('/api/v1/tours', (request, response) => {
   response.status(200).json({
     status: 'success',
     results: tours.length,
-    data: {
-      tours,
-    },
+    data: { tours },
+  });
+});
+
+app.get('/api/v1/tours/:id', (request, response) => {
+  const tour = tours.find((tour) => tour.id === +request.params.id);
+  if (!tour)
+    return response.status(404).json({
+      status: 'failed',
+      message: 'Invalid ID.',
+    });
+
+  response.status(200).json({
+    status: 'success',
+    data: { tour },
   });
 });
 
@@ -29,9 +41,7 @@ app.post('/api/v1/tours', (request, response) => {
     (err) => {
       response.status(201).json({
         status: 'success',
-        data: {
-          tour: newTour,
-        },
+        data: { tour: newTour },
       });
     }
   );
