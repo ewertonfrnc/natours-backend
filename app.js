@@ -11,15 +11,18 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use(express.json());
 app.use((request, response, next) => {
-  console.log('Hello from the middleware 👋');
-  next();
-});
-app.use((request, response, next) => {
   request.requestTime = new Date().toISOString();
   next();
 });
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+app.all('*', (request, response, next) => {
+  response.status(404).json({
+    status: 'fail',
+    message: `Can't find ${request.originalUrl} on this server!`,
+  });
+});
 
 module.exports = app;
