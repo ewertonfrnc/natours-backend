@@ -1,4 +1,5 @@
 const morgan = require('morgan');
+const cors = require('cors');
 const express = require('express');
 
 const AppError = require('./utils/app-error.utils');
@@ -13,6 +14,7 @@ const app = express();
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use(express.json());
+app.use(cors());
 app.use((request, response, next) => {
   request.requestTime = new Date().toISOString();
   next();
