@@ -59,6 +59,13 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(passwordFromRequestBody, userHashedPassword);
 };
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 userSchema.methods.changePasswordAfter = function (jwtTimeStamp) {
   if (this.passwordChangedAt) {
     const changedTimeStamp = parseInt(
@@ -80,11 +87,10 @@ userSchema.methods.createPasswordResetToken = function () {
   this.passwordResetToken = crypto
     .createHash('sha256')
     .update(resetToken)
-    .digest();
+    .digest('hex');
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
-  console.log({ resetToken }, this.passwordResetExpires);
   return resetToken;
 };
 
